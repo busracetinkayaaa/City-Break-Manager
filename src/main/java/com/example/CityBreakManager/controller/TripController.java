@@ -31,7 +31,7 @@ public class TripController {
         return tripService.getTripById(id);
     }
 
-    @GetMapping("/city/{cityId}")
+    @GetMapping("/city/{cityId}/trips")
     public List<Trip> getTripsByCity(@PathVariable("cityId") Long cityId){
         return tripService.getTripsByCity(cityId);
     }

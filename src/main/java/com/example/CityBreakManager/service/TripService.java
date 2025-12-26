@@ -32,7 +32,12 @@ public class TripService {
     }
 
     public List<Trip> getTripsByCity(Long cityId){
-        return (List<Trip>) tripRepository.findById(cityId).orElseThrow(()->new RuntimeException("Bu şehirde gezi bulunamadı."));
+        List<Trip> trips=tripRepository.findByCityId(cityId);
+        if (trips.isEmpty()) {
+            throw new RuntimeException("Bu şehirde gezi bulunamadı.");
+        }
+
+        return trips;
     }
     public Trip updateTrip(Long id, Trip updatedTrip){
         Trip trip=getTripById(id);
