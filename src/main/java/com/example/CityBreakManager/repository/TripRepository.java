@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TripRepository extends JpaRepository<Trip,Long> {
-List<Trip> findByCityId(Long cityId);
+    List<Trip> findByCity_NameContainingIgnoreCaseOrCity_CountryContainingIgnoreCase(String cityName, String countryName);
+    List<Trip> findByCityId(Long cityId);
 }

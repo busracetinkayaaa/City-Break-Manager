@@ -10,7 +10,7 @@ public class Trip {
     @Id
     @GeneratedValue()
 
-    private Long tripId;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "cityId")
     private City city;
@@ -20,11 +20,11 @@ public class Trip {
     private String notes;
 
     public Long getId() {
-        return tripId;
+        return id;
     }
 
     public void setId(Long id) {
-        this.tripId = tripId;
+        this.id = id;
     }
 
     public City getCity() {

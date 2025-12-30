@@ -17,8 +17,10 @@ public class TripService {
         this.tripRepository = tripRepository;
         this.cityRepository = cityRepository;
     }
-    public Trip addTrip(Long cityId, Trip trip){
-        City city = cityRepository.findById(cityId).orElseThrow(()->new RuntimeException("Şehir bulunamadı."));
+    public Trip addTrip(Long cityId, Trip trip) {
+        City city = cityRepository.findById(cityId)
+                .orElseThrow();
+
         trip.setCity(city);
         return tripRepository.save(trip);
     }
@@ -27,33 +29,40 @@ public class TripService {
         return tripRepository.findAll();
     }
 
-    public Trip getTripById(Long id){
-        return tripRepository.findById(id).orElseThrow(()->new RuntimeException("Gezi bulunamadı."));
-    }
 
-    public List<Trip> getTripsByCity(Long cityId){
-        List<Trip> trips=tripRepository.findByCityId(cityId);
+    public List<Trip> getTripsByCityId(Long cityId) {
+        // findById yerine findByCityId kullanıyoruz çünkü bir liste bekliyoruz
+        List<Trip> trips = tripRepository.findByCityId(cityId);
+
+        // Eğer liste boşsa hata fırlatmak yerine boş liste dönmek React tarafı için daha iyidir
+        // Ama mutlaka hata fırlatmak istersen:
         if (trips.isEmpty()) {
-            throw new RuntimeException("Bu şehirde gezi bulunamadı.");
+            System.out.println(cityId + " ID'li şehir için gezi bulunamadı.");
         }
 
         return trips;
     }
+
+    public List<Trip> searchTrips(String keyword){
+        if (keyword == null || keyword.isBlank()) {
+            return tripRepository.findAll();
+        }
+        return tripRepository.findByCity_NameContainingIgnoreCaseOrCity_CountryContainingIgnoreCase(keyword, keyword);
+    }
     public Trip updateTrip(Long id, Trip updatedTrip){
-        Trip trip=getTripById(id);
+        return tripRepository.findById(id).map(existingTrip -> {
+            existingTrip.setStartDate(updatedTrip.getStartDate());
+            existingTrip.setEndDate(updatedTrip.getEndDate());
+            existingTrip.setRating(updatedTrip.getRating());
+            existingTrip.setNotes(updatedTrip.getNotes());
 
-        trip.setCity(updatedTrip.getCity());
-        trip.setNotes(updatedTrip.getNotes());
-        trip.setNotes(updatedTrip.getNotes());
-        trip.setStartDate(updatedTrip.getStartDate());
-        trip.setEndDate(updatedTrip.getEndDate());
-        trip.setRating(updatedTrip.getRating());
-
-        return tripRepository.save(trip);
+            return tripRepository.save(existingTrip);
+        }).orElseThrow(() -> new RuntimeException("Gezi bulunamadı."));
 
     }
     public void deleteTrip(Long id){
         tripRepository.deleteById(id);
     }
+
 
 }

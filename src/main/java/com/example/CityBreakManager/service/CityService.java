@@ -18,11 +18,10 @@ public class CityService {
         if((city.getName() == null) || (city.getName().isBlank())){
             throw new IllegalArgumentException("Şehir ismi boş olamaz");
         }
-        if(cityRepository.existsByName(city.getName())){
+        return  cityRepository.findByNameIgnoreCase(city.getName()).orElseGet(()->{
 
-            throw new IllegalStateException("Şehir zaten var");
-        }
-        return cityRepository.save(city);
+            return cityRepository.save(city);
+        });
     }
 
     public List<City> getAllCities(){

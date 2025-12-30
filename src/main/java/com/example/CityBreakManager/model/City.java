@@ -1,22 +1,22 @@
 package com.example.CityBreakManager.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-
     private Long id;
     private String name;
     private String country;
     private String detail;
 
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Trip> trips = new ArrayList<>();
     public Long getId() {
         return id;
     }
